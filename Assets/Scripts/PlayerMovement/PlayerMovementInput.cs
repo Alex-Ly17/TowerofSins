@@ -44,8 +44,13 @@ public class PlayerMovementInput : MonoBehaviour
     // Try changing this value and see how differently the blend feels.
     [SerializeField] private float dampTime = 0.1f;
 
+    [Header("Movement")] // Added
+    [Tooltip("How fast the character moves.")]
+    [SerializeField] private float moveSpeed = 5f;
+
     private InputAction moveAction;
     private Animator animator;
+    private CharacterController controller; // Added
 
     /// <summary>
     /// The current input direction, updated every frame. You won't need to
@@ -65,6 +70,7 @@ public class PlayerMovementInput : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        controller = GetComponent<CharacterController>(); // Added
 
         if (inputActions == null)
         {
@@ -138,6 +144,8 @@ public class PlayerMovementInput : MonoBehaviour
 
         animator.SetFloat(moveXParam, MoveInput.x, dampTime, Time.deltaTime);
         animator.SetFloat(moveYParam, MoveInput.y, dampTime, Time.deltaTime);
+
+        controller.Move(MoveInput * Time.deltaTime); // Added
 
     }
 }
