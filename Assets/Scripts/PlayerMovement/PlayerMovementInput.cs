@@ -23,10 +23,10 @@ public class PlayerMovementInput : MonoBehaviour
     [SerializeField] private float dampTime = 0.1f;
 
     // Variables that determine the games movement physics
-    [Header("Physics")] 
+    [Header("Physics")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotateSpeed = 5f;
-    [SerializeField] private float jumpSpeed = 1.5f;
+    [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravityValue = -9.8f;
 
     // Variables corresponding to player actions
@@ -42,12 +42,14 @@ public class PlayerMovementInput : MonoBehaviour
     public Vector2 moveInput;
     public Vector2 lookInput;
 
-    // Variable for determining move direction
-    public Vector3 playerVelocity;
-    public Vector3 playerMove;
+    // Variable for determining if player is moving
+    Vector3 playerMove;
+
+    // Variable for player overall speed (not base)
+    Vector3 playerVelocity;
 
     // Checks if player is on ground
-    private bool groundedPlayer;
+    private bool isGrounded;
 
     private void OnEnable()
     {
@@ -75,27 +77,33 @@ public class PlayerMovementInput : MonoBehaviour
 
     private void Update()
     {
-        // checks if player is on ground
-        groundedPlayer = controller.isGrounded;
-
-        // ensures player is stable on ground
-        if (groundedPlayer)
-        {
-            if (playerVelocity.y < -2f)
-            {
-                playerVelocity.y = -2f;
-            }
-        }
-
-
         // read player move and look input  
         moveInput = moveAction.ReadValue<Vector2>();
         lookInput = lookAction.ReadValue<Vector2>();
 
-        // read player input and try to jump
-        if (jumpAction.WasPressedThisFrame() && controller.isGrounded)
+        // checks if player is on ground
+        Debug.Log(isGrounded);
+
+        isGrounded = controller.isGrounded;
+
+        // ensures player is stable on ground
+        if (isGrounded && playerVelocity.y < 0)
         {
-            
+            playerVelocity.y = -2f;
+        }
+
+        // apply gravity
+        playerVelocity.y += gravityValue * Time.deltaTime;
+
+        // read player input and try to jump
+        if (jumpAction.WasPressedThisFrame() && isGrounded)
+        {
+            Jump();
+        }
+
+        if (isGrounded != true)
+        {
+            animator.SetTrigger("isFalling");
         }
 
     }
@@ -105,31 +113,32 @@ public class PlayerMovementInput : MonoBehaviour
         Move();
     }
 
+    // for character jump + animation
     public void Jump()
     {
-       
+        playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+        animator.SetTrigger("isJump");
     }
 
     // for character movement + animation
     public void Move()
     {
+        // sends move input to animator
         animator.SetFloat(moveXParam, moveInput.x, dampTime, Time.deltaTime);
         animator.SetFloat(moveYParam, moveInput.y, dampTime, Time.deltaTime);
 
+        // transforms 2d moveInput to measurement in 3d space
         playerMove = new Vector3(moveInput.x, 0f, moveInput.y);
         playerMove = Vector3.ClampMagnitude(playerMove, 1f);
 
+        // updates if player is moving
         if (playerMove != Vector3.zero)
         {
             transform.forward = playerMove;
         }
 
-        Vector3 finalMove = playerMove * moveSpeed + Vector3.up * playerVelocity.y; 
+        // tells player character to move
+        Vector3 finalMove = playerMove * moveSpeed + Vector3.up * playerVelocity.y;
         controller.Move(finalMove * Time.deltaTime);
-
-        //// moves character
-        //moveDirection = transform.TransformDirection(moveDirection);
-        //controller.Move(moveDirection * moveSpeed * Time.deltaTime);
     }
 }
- 
