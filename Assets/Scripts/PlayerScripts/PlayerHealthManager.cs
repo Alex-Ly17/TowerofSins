@@ -20,11 +20,6 @@ public class PlayerHealthManager : MonoBehaviour
         m_HealthLabel.text = $"{healthData.playerCurrentHealth}/{healthData.playerMaxHealth}";
 
         healthData.playerCurrentHealth = healthData.playerMaxHealth;
-
-        // set up health bar 
-        float healthRatio = (float)healthData.playerCurrentHealth / healthData.playerMaxHealth;
-        float healthPercent = Mathf.Lerp(8, 88, healthRatio);
-        m_HealthBarMask.style.width = Length.Percent(healthPercent);
     }
 
     public void TakeDamage(float damageAmount)
