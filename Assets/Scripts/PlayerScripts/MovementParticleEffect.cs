@@ -1,23 +1,18 @@
 using UnityEngine;
 
-public class DustSpawner : MonoBehaviour
+public class MovementParticleEffect : MonoBehaviour
 {
     public GameObject dustPrefab;
     public Transform feet;
     public float speedThreshold = 3f;
     Rigidbody rb;
-    void Start()
+    public void Start()
     {
         // connect rigid body
         rb = GetComponent<Rigidbody>();
     }
-    void Update()
-    {
-        // check method every frame
-        DustParticle();
-    }
 
-    void DustParticle()
+    public void DustParticle()
     {
         // if moving fast, create particle
         if (rb.linearVelocity.magnitude > speedThreshold)

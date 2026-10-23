@@ -1291,6 +1291,11 @@ MonoBehaviour:
   AmplitudeGain: 0.2
   FrequencyGain: 0.2
   m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!23 &304063762 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -6067185528594298527, guid: 55fff312777b76945b04ed297016290e, type: 3}
+  m_PrefabInstance: {fileID: 685441778}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &316643696
 Mesh:
   m_ObjectHideFlags: 0
@@ -1729,6 +1734,31 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2916570863362053800, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
   m_PrefabInstance: {fileID: 1360660565}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &428414333 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 55fff312777b76945b04ed297016290e, type: 3}
+  m_PrefabInstance: {fileID: 685441778}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &428414335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428414333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 626f7dd65eea62347b6271045465d088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OverlapSphereDemo
+  radius: 3
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  feedbackRenderer: {fileID: 304063762}
+  noDetectionColor: {r: 1, g: 1, b: 1, a: 1}
+  detectionColor: {r: 1, g: 0, b: 0, a: 1}
+  onEntryDamage: 10
 --- !u!1001 &502069525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3034,12 +3064,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 55fff312777b76945b04ed297016290e, type: 3}
       propertyPath: m_Name
-      value: Frozen Humanoid (2)
+      value: Enemy with Overlap Detector
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55fff312777b76945b04ed297016290e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 428414335}
   m_SourcePrefab: {fileID: 100100000, guid: 55fff312777b76945b04ed297016290e, type: 3}
 --- !u!1001 &737657652
 PrefabInstance:
@@ -3760,6 +3793,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
+  MovementParticleEffect: {fileID: 1020669751}
 --- !u!54 &1020669746
 Rigidbody:
   m_ObjectHideFlags: 0

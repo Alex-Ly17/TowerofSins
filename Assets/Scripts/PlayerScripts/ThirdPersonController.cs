@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
- 
+
 public class ThirdPersonController : MonoBehaviour
 {
     // variables that connect to animator
@@ -115,6 +115,10 @@ public class ThirdPersonController : MonoBehaviour
 
     // tracks animation values for 2D blend tree
     private Vector2 currentAnimVelocity;
+
+    // movement particle effects script
+    [SerializeField]
+    public MovementParticleEffect MovementParticleEffect;
 
     // when script launch, connect component variables to outer components
     private void Awake()
@@ -235,6 +239,12 @@ public class ThirdPersonController : MonoBehaviour
             {
                 footstepSource.Play();
             }
+
+            if (isGrounded)
+            {
+                MovementParticleEffect.DustParticle();
+            }
+
         }
         else
         {
