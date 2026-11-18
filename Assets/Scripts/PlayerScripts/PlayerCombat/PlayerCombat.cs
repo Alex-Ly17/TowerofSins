@@ -1,80 +1,60 @@
-//using System.Collections;
-//using UnityEngine;
-//using UnityEngine.InputSystem;
-//using Unity.Cinemachine;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
-//public class PlayerCombat : MonoBehaviour
-//{
-//    // Reference to movement controller + animator
-//    private ThirdPersonController thirdPersonController;
-//    private Animator animator;
+public class PlayerCombat : MonoBehaviour
+{
+    // Reference to movement controller + animator
+    private ThirdPersonController thirdPersonController;
+    private Animator animator;
 
-//    // Scriptable Object
-//    [Header("Equipped Weapon")]
-//    public WeaponData currentWeapon; 
+    // Scriptable Object
+    [Header("Equipped Weapon")]
+    public PlayerCombatData currentWeapon;
 
-//    [Header("Combo Tracking")]
-//    public int currentComboStep = 0;
-//    private float lastAttackTime;
-//    public LayerMask targetLayer;
+    [Header("Combo Tracking")]
+    public int currentComboStep = 0;
+    private float lastAttackTime;
+    public LayerMask targetLayer;
 
-//    void Start()
-//    {
-//        // Connects the references to script
-//        thirdPersonController = GetComponent<ThirdPersonController>();
-//        animator = GetComponentInChildren<Animator>();
-//    }
+    void Start()
+    {
+        // Connects the references to script
+        thirdPersonController = GetComponent<ThirdPersonController>();
+        animator = GetComponentInChildren<Animator>();
+    }
 
-//    void Update()
-//    {
+    void Update()
+    {
 
-//        if (currentComboStep > 0 && Time.time - lastAttackTime > currentWeapon.comboResetTime)
-//        {
-//            currentComboStep = 0;
-//        }
-//    }
+        if (currentComboStep > 0 && Time.time - lastAttackTime > currentWeapon.comboResetTime)
+        {
+            currentComboStep = 0;
+        }
+    }
 
-//    // connects dodge input value to player input system
-//    private void OnMeleeAttack(InputValue inputValue)
-//    {
-//        // if dodging or not on ground don't do
-//        if (thirdPersonController.isDodging || !thirdPersonController.isgrounded || )
-//        {
-//            PerformMeleeAttack();
-//        }
-//    }
+    // connects dodge input value to player input system
+    private void OnMeleeAttack(InputValue inputValue)
+    {
+        Debug.Log("Attacking!");
+        // if animation finish and if dodging or not on ground don't do
+        if (Time.time - lastAttackTime > currentWeapon.attackDuration && !thirdPersonController.isDodging || !thirdPersonController.isGrounded)
+        {
+            PerformMeleeAttack();
+        }
+    }
 
-//    private void PerformMeleeAttack()
-//    {
-//        // Put your OverlapSphere damage logic and animation triggers here
-//        Debug.Log("Attacking!");
-//    }
-//}
-
-
-
+    private void PerformMeleeAttack()
+    {
+        // Put your OverlapSphere damage logic and animation triggers here
+        Debug.Log("Attacking!");
+    }
+}
 
 
-//void Update()
-//{
-//    // Safety check: Do not allow attacking if no weapon is equipped
-//    if (currentWeapon == null) return;
 
-//    // 1. Reset combo using the weapon's specific reset timer
-//    if (currentComboStep > 0 && Time.time - lastAttackTime > currentWeapon.comboResetTime)
-//    {
-//        currentComboStep = 0;
-//    }
 
-//    // 2. Read attack input using the weapon's specific swing speed
-//    if (Input.GetMouseButtonDown(0))
-//    {
-//        if (!movementController.isDodging && Time.time - lastAttackTime > currentWeapon.attackDuration)
-//        {
-//            ExecuteComboHit();
-//        }
-//    }
-//}
 
 //private void ExecuteComboHit()
 //{

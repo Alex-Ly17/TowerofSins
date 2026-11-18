@@ -4,7 +4,9 @@ using UnityEngine;
 public class PlayerCombatData : ScriptableObject
 {
     [Header("Combat Stats")]
-    public float baseDamage = 10f;
+    public float baseDamage0 = 10f;
+    public float baseDamage1 = 20f;
+    public float baseDamage2 = 30f;
     public float attackRadius = 1.5f;
 
     [Header("Combo Timers")]

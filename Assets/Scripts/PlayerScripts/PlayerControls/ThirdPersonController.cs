@@ -100,13 +100,13 @@ public class ThirdPersonController : MonoBehaviour
     private float pitch;
 
     // bools that detect if character is doing action
-    private bool isGrounded = true;
-    private bool isRunning;
-    private bool canJump = true;
-    private bool isJump = false;
-    private bool falling;
-    private bool canDodge = true;
-    private bool isDodging = false;
+    public bool isGrounded = true;
+    public bool isRunning;
+    public bool canJump = true;
+    public bool isJump = false;
+    public bool falling;
+    public bool canDodge = true;
+    public bool isDodging = false;
 
     // tracks animation values for 2D blend tree
     private Vector2 currentAnimVelocity;
