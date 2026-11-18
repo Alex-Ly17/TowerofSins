@@ -3606,10 +3606,6 @@ MonoBehaviour:
   cameraTarget: {fileID: 1659008319}
   virtualCam: {fileID: 268132902}
   footstepSource: {fileID: 1020669749}
-  topClamp: 70
-  bottomClamp: -30
-  movementSpeed: 3
-  lookSpeed: 10
   groundCheckPoint: {fileID: 842517766}
   groundCheckRadius: 0.2
   groundLayer:
@@ -5023,16 +5019,16 @@ PrefabInstance:
       addedObject: {fileID: 1020669745}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1020669749}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1020669750}
+      addedObject: {fileID: 1020669752}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1020669751}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1020669752}
+      addedObject: {fileID: 1020669749}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1020669750}
   m_SourcePrefab: {fileID: 100100000, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
 --- !u!43 &1407560349
 Mesh:

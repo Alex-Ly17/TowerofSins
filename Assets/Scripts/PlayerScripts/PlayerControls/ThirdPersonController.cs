@@ -43,20 +43,15 @@ public class ThirdPersonController : MonoBehaviour
     private bool isTired = false;
 
     // how far camera can tilt up
-    [SerializeField]
     private float topClamp = 70.0f;
 
     // how far camera can tilt down
-    [SerializeField]
     private float bottomClamp = -30.0f;
 
     // how fast player base movement is
-    [Header("Speed")]
-    [SerializeField]
     private float movementSpeed = 3f;
 
     // how fast player can pan the camera
-    [SerializeField]
     private float lookSpeed = 10f;
 
     // Determines how high the player can jump, and how long till next jump
