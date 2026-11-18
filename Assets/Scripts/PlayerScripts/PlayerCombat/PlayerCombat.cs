@@ -34,7 +34,7 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    // connects dodge input value to player input system
+    // connects melee input value to player input system
     private void OnMeleeAttack(InputValue inputValue)
     {
         Debug.Log("Attacking!");

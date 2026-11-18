@@ -3611,6 +3611,13 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
+  isGrounded: 1
+  isRunning: 0
+  canJump: 1
+  isJump: 0
+  falling: 0
+  canDodge: 1
+  isDodging: 0
   MovementParticleEffect: {fileID: 1020669751}
 --- !u!54 &1020669746
 Rigidbody:
@@ -3915,6 +3922,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthManager
   healthData: {fileID: 11400000, guid: 8a15979db9acacf4c8dc43b23ec98a6c, type: 2}
   UIDoc: {fileID: 1028921300}
+--- !u!114 &1020669753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020669741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e3d4062caf8264183cc03e1ba2d109, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  currentWeapon: {fileID: 11400000, guid: 1cfc1f62f66619743b032400ac1126a3, type: 2}
+  currentComboStep: 0
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1028921299
 GameObject:
   m_ObjectHideFlags: 0
@@ -5029,6 +5053,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1020669750}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1020669753}
   m_SourcePrefab: {fileID: 100100000, guid: 3825f5ef082770a4ea8bdd1b2eb0f84f, type: 3}
 --- !u!43 &1407560349
 Mesh:
