@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1cd63f7e1e80d478c08d44fb01528d, type: 3}
   m_Name: PlayerCombatData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatData
-  baseDamage0: 10
-  baseDamage1: 20
-  baseDamage2: 30
+  baseDamage1: 10
   attackRadius: 1.5
-  attackDuration: 0.5
-  comboResetTime: 1.2
+  attackDowntime: 1

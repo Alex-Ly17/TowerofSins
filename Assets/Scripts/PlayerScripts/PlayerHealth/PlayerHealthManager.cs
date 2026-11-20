@@ -5,6 +5,7 @@ public class PlayerHealthManager : MonoBehaviour
 {
     [Header("Scriptable Object Referece")]
     public PlayerHealthData healthData;
+    public ThirdPersonController thirdPersonController;
     public UIDocument UIDoc;
 
     private Label m_HealthLabel;
@@ -24,6 +25,11 @@ public class PlayerHealthManager : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
+        if (thirdPersonController.isDodging)
+        {
+            return;
+        }
+
         // take amount of damage
         healthData.playerCurrentHealth = Mathf.Clamp(healthData.playerCurrentHealth - damageAmount, 0, 100);
 

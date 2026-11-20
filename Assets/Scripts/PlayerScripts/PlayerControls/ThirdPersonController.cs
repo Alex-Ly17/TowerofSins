@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using UnityEngine.UI;
 
 public class ThirdPersonController : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class ThirdPersonController : MonoBehaviour
     private const string moveYParamName = "MoveY";
     private const string jumpParamName = "Jump";
     private const string groundedParamName = "Grounded";
-    private const string fallingParamName = "Falling";
     private const string dodgeParamName = "Dodge";
 
     // prevents jitter from micro movement
@@ -62,10 +62,11 @@ public class ThirdPersonController : MonoBehaviour
 
     // Determines dodge
     private float dodgeForce = 5f;
-    private float dodgeDowntime = 5f;
+    private float dodgeDowntime = 10f;
     private float dodgeCooldown = 0.5f;
     private float dodgeTimer = 0f;
     private float dodgeHeight = 1f;
+    private Coroutine dodgeDowntimeRoutine;
 
     // player attached reference point to check ground
     [Header("Grounded")]
@@ -104,9 +105,11 @@ public class ThirdPersonController : MonoBehaviour
     public bool isRunning;
     public bool canJump = true;
     public bool isJump = false;
-    public bool falling;
     public bool canDodge = true;
     public bool isDodging = false;
+
+    // bool that checks if player is in action
+    public bool inAction = false;
 
     // tracks animation values for 2D blend tree
     private Vector2 currentAnimVelocity;
@@ -115,18 +118,31 @@ public class ThirdPersonController : MonoBehaviour
     [SerializeField]
     public MovementParticleEffect MovementParticleEffect;
 
+    // connects playercombat script
+    private PlayerCombat playerCombat;
+
+    // dodge UI
+    [Header("Dodge UI")]
+    [SerializeField] private Slider dodgeSlider;
+
     // when script launch, connect component variables to outer components
     private void Awake()
     {
         body = GetComponent<Rigidbody>();
         collider = GetComponent<CapsuleCollider>();
         animator = GetComponent<Animator>();
+        playerCombat = GetComponent<PlayerCombat>();
 
         // Save base height of character
         standingHeight = collider.height;
 
         // connect cinemachine camera effect to script
         camNoise = virtualCam.GetComponent<CinemachineBasicMultiChannelPerlin>();
+
+        // sets base values of dodge UI
+        dodgeSlider.minValue = 0f;
+        dodgeSlider.maxValue = 1f;
+        dodgeSlider.value = 1f;
     }
 
     // updates every frame
@@ -170,23 +186,6 @@ public class ThirdPersonController : MonoBehaviour
             }
 
             // stops Move() so players get propelled forward
-            return;
-        }
-
-        // checks if player is jumping, and if so gives slight delay to jump animation
-        if (isJump)
-        {
-            // timer for jump delay
-            jumpTimer -= Time.fixedDeltaTime;
-            
-            // when timer runs out, launch player up to match animation
-            if (jumpTimer <= 0)
-            {
-                isJump = false;
-
-                // after a delay, apply the jump force to player to match the actual animation
-                body.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
-            }
             return;
         }
 
@@ -247,17 +246,13 @@ public class ThirdPersonController : MonoBehaviour
             body.linearVelocity = new Vector3(0, currentVelocity.y, 0);
             footstepSource.Stop();
         }
-
-        // tracks if player is falling
-        falling = !isGrounded && body.linearVelocity.y < -0.1f;
-        animator.SetBool(fallingParamName, falling);
     }
 
     // allows the player to jump
     private void Jump()
     {
         // if the player is grounded or can't jump (mid animation already); stop and don't jump
-        if (!isGrounded || !canJump || !canDodge)
+        if (!isGrounded || inAction)
         {
             return;
         }
@@ -267,13 +262,18 @@ public class ThirdPersonController : MonoBehaviour
 
         // tell the game the player is currently jumping
         isJump = true;
+        inAction = true;
 
         // tells the jump animation to trigger
         animator.SetTrigger(jumpParamName);
 
         // set canJump to false so player can't jump mid-animation
         canJump = false;
-        
+
+        // jump
+        body.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
+        isJump = false;
+
         // timer for when player can jump again
         StartCoroutine(JumpDowntimeCoroutine(skipLaunchTime: false));
 
@@ -301,57 +301,81 @@ public class ThirdPersonController : MonoBehaviour
 
         // makes character not tired
         isTired = false;
+        inAction = false;
     }
 
-    // allows the player to dodge
     private void Dodge()
     {
-        // cant dodge when these are happening
-        if (!isGrounded || !canJump || !canDodge)
+        // Check !canDodge as well so clearing inAction elsewhere cannot bypass the cooldown
+        if (!isGrounded || inAction || !canDodge)
         {
             return;
         }
 
-        // adjust character hitbox
+        // Adjust character hitbox
         collider.height = dodgeHeight;
 
-        // applies the actual dodge to player using their current speed
+        // Applies the actual dodge to player
         body.AddForce(transform.forward * dodgeForce, ForceMode.Impulse);
 
-        // dodge duration
+        // Dodge duration
         dodgeTimer = dodgeCooldown;
 
-        // tells the game player is currently dodging
+        // Tells the game player is currently dodging
         isDodging = true;
+        inAction = true;
 
-        // player cannot dodge immediately after doing it
+        // Player cannot dodge again until DodgeDowntimeCoroutine finishes
         canDodge = false;
 
-        // next dodge timer
-        StartCoroutine(DodgeDowntimeCoroutine(skipLaunchTime: false));
+        // Prevent overlapping cooldown coroutines
+        if (dodgeDowntimeRoutine != null)
+        {
+            StopCoroutine(dodgeDowntimeRoutine);
+        }
+        dodgeDowntimeRoutine = StartCoroutine(DodgeDowntimeCoroutine(skipLaunchTime: false));
 
-        // animation
+        // Animation
         animator.SetTrigger(dodgeParamName);
     }
 
-    // set delay to next dodge
+    // Set delay to next dodge
     private IEnumerator DodgeDowntimeCoroutine(bool skipLaunchTime)
     {
-        // makes character tired
+        // Makes character tired and immediately empties the cooldown bar
         isTired = true;
+        UpdateDodgeBar(0f);
 
         if (!skipLaunchTime)
         {
-            // wait for players 
             yield return new WaitForSeconds(0.25f);
         }
 
-        // wait for dodge down time before player can jump again
-        yield return new WaitForSeconds(dodgeDowntime);
-        canDodge = true;
+        // Smoothly refill the bar across dodgeDowntime
+        float elapsed = 0f;
+        while (elapsed < dodgeDowntime)
+        {
+            elapsed += Time.deltaTime;
+            float progress = dodgeDowntime > 0f ? Mathf.Clamp01(elapsed / dodgeDowntime) : 1f;
+            UpdateDodgeBar(progress);
+            yield return null;
+        }
 
-        // makes character not tired
+        // Snap cleanly to full and re-enable dodge
+        UpdateDodgeBar(1f);
+        canDodge = true;
         isTired = false;
+        inAction = false;
+        dodgeDowntimeRoutine = null;
+    }
+
+    // update dodge timer
+    private void UpdateDodgeBar(float normalizedValue)
+    {
+        if (dodgeSlider != null)
+        {
+            dodgeSlider.value = normalizedValue;
+        }
     }
 
     // adjust player camera angle
@@ -403,7 +427,7 @@ public class ThirdPersonController : MonoBehaviour
         // tells animator if the player is grounded
         animator.SetBool(groundedParamName, isGrounded);
 
-        if (canJump && falling && isGrounded)
+        if (canJump && isGrounded)
         {
             canJump = false;
             StartCoroutine(JumpDowntimeCoroutine(skipLaunchTime: true));
