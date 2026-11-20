@@ -11,8 +11,7 @@ public class PlayerCombat : MonoBehaviour
 
     //
     public bool canAttack = true;
-    public bool enemyHit = false;
-
+ 
     // Scriptable Object
     [Header("Equipped Weapon")]
     public PlayerCombatData currentWeapon;
@@ -20,18 +19,11 @@ public class PlayerCombat : MonoBehaviour
     [Header("Combo Tracking")]
     public LayerMask targetLayer;
 
-    // for hit audio
-    [Header("Audio")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip hitSfx;
-
-
     void Start()
     {
         // Connect references
         thirdPersonController = GetComponent<ThirdPersonController>();
         animator = GetComponentInChildren<Animator>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     // Connects melee input value to player input system
@@ -89,15 +81,7 @@ public class PlayerCombat : MonoBehaviour
             if (enemyHealth != null)
             {
                 enemyHealth.EnemyTakeDamage(damageAmount);
-                enemyHit = true;
             }
-        }
-
-        if (enemyHit is true)
-        {
-            Debug.Log("h");
-            audioSource.PlayOneShot(hitSfx);
-            enemyHit = false;
         }
     }
 }

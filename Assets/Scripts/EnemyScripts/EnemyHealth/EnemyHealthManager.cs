@@ -9,6 +9,11 @@ public class EnemyHealthManager : MonoBehaviour
     public EnemyHealthData enemyHealthData;
     private FlashOnHit flashOnHit;
 
+    // for hit audio
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hitSfx;
+
     void Start()
     {
         healthSlider = GetComponentInChildren<Slider>();
@@ -16,6 +21,8 @@ public class EnemyHealthManager : MonoBehaviour
         healthSlider.value = enemyHealthData.enemyCurrentHealth / enemyHealthData.enemyMaxHealth;
 
         flashOnHit = GetComponent<FlashOnHit>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void EnemyTakeDamage(float damageAmount)
@@ -28,5 +35,7 @@ public class EnemyHealthManager : MonoBehaviour
         {
             flashOnHit.OnHit();
         }
+
+        audioSource.PlayOneShot(hitSfx);
     }
 }
